@@ -319,7 +319,12 @@ class Ftp extends AbstractFtpAdapter
             return ['type' => 'dir', 'path' => $path];
         }
 
-        $listing = ftp_rawlist($connection, $path);
+        $rootDir = ftp_pwd($connection);
+        ftp_chdir($connection, dirname($path));
+
+        $listing = ftp_rawlist($connection, basename($path));
+
+        ftp_chdir($connection, $rootDir);
 
         if (empty($listing)) {
             return false;
